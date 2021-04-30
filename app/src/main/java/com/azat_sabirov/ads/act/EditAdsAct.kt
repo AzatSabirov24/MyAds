@@ -1,23 +1,30 @@
 package com.azat_sabirov.ads.act
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.sax.RootElement
-import android.widget.ArrayAdapter
-import com.azat_sabirov.ads.R
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.azat_sabirov.ads.databinding.ActivityEditAdsBinding
+import com.azat_sabirov.ads.dialogs.DialogSpinnerHelper
 import com.azat_sabirov.ads.utils.CityHelper
 
 class EditAdsAct : AppCompatActivity() {
-    private lateinit var rootElement: ActivityEditAdsBinding
+    lateinit var rootElement: ActivityEditAdsBinding
+    private val dialog = DialogSpinnerHelper()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         rootElement = ActivityEditAdsBinding.inflate(layoutInflater)
         setContentView(rootElement.root)
+        init()
+    }
 
-        val adapter = ArrayAdapter(
-            this,android.R.layout.simple_spinner_item,CityHelper.getAllCountries(this))
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        rootElement.spCountry.adapter = adapter
+    private fun init() {
+    }
+
+    //OnCLicks
+
+    fun onClickSelectCountry(view: View){
+        val listCountry = CityHelper.getAllCountries(this)
+        dialog.showSpinnerDialog(this, listCountry)
     }
 }
