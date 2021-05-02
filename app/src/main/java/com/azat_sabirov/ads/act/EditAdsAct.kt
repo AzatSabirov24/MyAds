@@ -1,29 +1,45 @@
 package com.azat_sabirov.ads.act
 
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.azat_sabirov.ads.R
 import com.azat_sabirov.ads.databinding.ActivityEditAdsBinding
 import com.azat_sabirov.ads.dialogs.DialogSpinnerHelper
+import com.azat_sabirov.ads.frag.FragmentCloseInterface
+import com.azat_sabirov.ads.frag.ImageListFrag
 import com.azat_sabirov.ads.utils.CityHelper
 import com.azat_sabirov.ads.utils.ImagePicker
 import com.fxn.pix.Pix
 import com.fxn.utility.PermUtil
 
 
-class EditAdsAct : AppCompatActivity() {
+class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     lateinit var rootElement: ActivityEditAdsBinding
     private val dialog = DialogSpinnerHelper()
-    private var isImagesPermissionGranted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         rootElement = ActivityEditAdsBinding.inflate(layoutInflater)
         setContentView(rootElement.root)
         init()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == ImagePicker.REQUEST_COD_GET_IMAGES) {
+            if (data != null) {
+                val returnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
+                Log.d("MyLog", "Image: ${returnValue?.get(0)}")
+                Log.d("MyLog", "Image: ${returnValue?.get(1)}")
+                Log.d("MyLog", "Image: ${returnValue?.get(2)}")
+            }
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -36,9 +52,8 @@ class EditAdsAct : AppCompatActivity() {
 
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    isImagesPermissionGranted = true
+                    ImagePicker.getImages(this, 3)
                 } else {
-                    isImagesPermissionGranted = false
                     Toast.makeText(
                         this,
                         "Approve permissions to open Pix ImagePicker",
@@ -74,6 +89,14 @@ class EditAdsAct : AppCompatActivity() {
     }
 
     fun onClickGetImages(view: View) {
-       ImagePicker.getImages(this)
+//       ImagePicker.getImages(this)
+        rootElement.svMain.visibility = View.GONE
+        val fm = supportFragmentManager.beginTransaction()
+        fm.replace(R.id.place_holder, ImageListFrag(this))
+        fm.commit()
+    }
+
+    override fun onFragClose() {
+        rootElement.svMain.visibility = View.VISIBLE
     }
 }
