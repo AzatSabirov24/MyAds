@@ -34,10 +34,13 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == ImagePicker.REQUEST_COD_GET_IMAGES) {
             if (data != null) {
-                val returnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
-                Log.d("MyLog", "Image: ${returnValue?.get(0)}")
-                Log.d("MyLog", "Image: ${returnValue?.get(1)}")
-                Log.d("MyLog", "Image: ${returnValue?.get(2)}")
+                val returnValues = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
+                if (returnValues?.size!! > 1) {
+                    rootElement.svMain.visibility = View.GONE
+                    val fm = supportFragmentManager.beginTransaction()
+                    fm.replace(R.id.place_holder, ImageListFrag(this, returnValues))
+                    fm.commit()
+                }
             }
         }
     }
@@ -53,6 +56,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     ImagePicker.getImages(this, 3)
+
                 } else {
                     Toast.makeText(
                         this,
@@ -89,11 +93,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     }
 
     fun onClickGetImages(view: View) {
-//       ImagePicker.getImages(this)
-        rootElement.svMain.visibility = View.GONE
-        val fm = supportFragmentManager.beginTransaction()
-        fm.replace(R.id.place_holder, ImageListFrag(this))
-        fm.commit()
+        ImagePicker.getImages(this, 3)
     }
 
     override fun onFragClose() {
