@@ -9,10 +9,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.azat_sabirov.ads.R
+import com.azat_sabirov.ads.adapters.ImageAdapter
 import com.azat_sabirov.ads.databinding.ActivityEditAdsBinding
 import com.azat_sabirov.ads.dialogs.DialogSpinnerHelper
 import com.azat_sabirov.ads.frag.FragmentCloseInterface
 import com.azat_sabirov.ads.frag.ImageListFrag
+import com.azat_sabirov.ads.frag.SelectImageItem
 import com.azat_sabirov.ads.utils.CityHelper
 import com.azat_sabirov.ads.utils.ImagePicker
 import com.fxn.pix.Pix
@@ -22,6 +24,7 @@ import com.fxn.utility.PermUtil
 class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     lateinit var rootElement: ActivityEditAdsBinding
     private val dialog = DialogSpinnerHelper()
+    lateinit var imageAdapter: ImageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +73,9 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
     }
 
     private fun init() {
+        imageAdapter = ImageAdapter()
+        rootElement.vpImages.adapter = imageAdapter
+
     }
 
     //OnCLicks
@@ -96,7 +102,8 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface {
         ImagePicker.getImages(this, 3)
     }
 
-    override fun onFragClose() {
+    override fun onFragClose(list: ArrayList<SelectImageItem>) {
         rootElement.svMain.visibility = View.VISIBLE
+        imageAdapter.update(list)
     }
 }

@@ -1,5 +1,5 @@
 package com.azat_sabirov.ads.frag
 
 interface FragmentCloseInterface {
-    fun onFragClose()
+    fun onFragClose(list: ArrayList<SelectImageItem>)
 }

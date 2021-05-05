@@ -33,6 +33,7 @@ class ImageListFrag(private val fragCloseInterface: FragmentCloseInterface, priv
         for (n in 0 until newList.size){
             updateList.add(SelectImageItem(n.toString(),newList[n]))
         }
+
         adapter.updateAdapter(updateList)
         bBack.setOnClickListener{
             activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
@@ -42,6 +43,6 @@ class ImageListFrag(private val fragCloseInterface: FragmentCloseInterface, priv
 
     override fun onDetach() {
         super.onDetach()
-        fragCloseInterface.onFragClose()
+        fragCloseInterface.onFragClose(adapter.mainArray)
     }
 }
